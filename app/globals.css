@@ -127,20 +127,45 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-    /* Fix mobile horizontal scroll */
+
+  /* Enhanced smooth scrolling with Lenis compatibility */
+  html {
+    scroll-behavior: auto;
+    scroll-padding-top: 80px;
     overflow-x: hidden;
+    overflow-y: auto;
   }
 
-  html {
-    scroll-behavior: smooth;
-    /* Fix mobile horizontal scroll */
+  body {
+    @apply bg-background text-foreground;
     overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: none;
+  }
+
+  /* Optimize rendering for smooth scroll */
+  html.lenis {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
   }
 }
 
-/* Custom smooth scroll animations */
+/* Enhanced smooth scroll animations with better easing */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -153,19 +178,22 @@
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
-/* Parallax container */
+/* Enhanced parallax container with smooth transitions */
 .parallax-container {
   position: relative;
   overflow: hidden;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
-/* Adding scroll reveal animations */
+/* Improved scroll reveal animations with slower, smoother transitions */
 .scroll-reveal {
   opacity: 0;
-  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .scroll-reveal-fade-up {
@@ -177,7 +205,7 @@
 }
 
 .scroll-reveal-scale-in {
-  transform: scale(0.9);
+  transform: scale(0.92);
 }
 
 .scroll-reveal-slide-left {
@@ -206,5 +234,41 @@
 }
 
 .image-scale-in {
-  animation: imageScale 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: imageScale 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+/* Enhanced smooth parallax scrolling with premium feel */
+@media (prefers-reduced-motion: no-preference) {
+  .parallax-element {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transition: transform 0.15s ease-out;
+  }
+
+  /* Smooth momentum scrolling for touch devices */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Optimize GPU acceleration for smooth scrolling */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
 }

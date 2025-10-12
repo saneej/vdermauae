@@ -189,6 +189,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
         <link rel="canonical" href="https://vdermauae.com" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer />
       </head>
       <body className="font-sans antialiased">
         <Suspense fallback={<div>Loading...</div>}>
@@ -197,6 +198,49 @@ export default function RootLayout({
           <Footer />
         </Suspense>
         <Analytics />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('load', function() {
+                if (typeof Lenis !== 'undefined') {
+                  const lenis = new Lenis({
+                    duration: 1.8,
+                    easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+                    direction: 'vertical',
+                    gestureDirection: 'vertical',
+                    smooth: true,
+                    smoothTouch: false,
+                    touchMultiplier: 2,
+                    infinite: false,
+                    lerp: 0.08,
+                    wheelMultiplier: 0.8,
+                  });
+
+                  function raf(time) {
+                    lenis.raf(time);
+                    requestAnimationFrame(raf);
+                  }
+
+                  requestAnimationFrame(raf);
+
+                  // Sync with anchor links
+                  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                      e.preventDefault();
+                      const target = document.querySelector(this.getAttribute('href'));
+                      if (target) {
+                        lenis.scrollTo(target, { offset: -80, duration: 2 });
+                      }
+                    });
+                  });
+
+                  // Expose lenis globally for debugging
+                  window.lenis = lenis;
+                }
+              });
+            `,
+          }}
+        />
       </body>
     </html>
   )

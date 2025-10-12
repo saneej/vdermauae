@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { ProductsManager } from "./products-manager"
 import { CategoriesManager } from "./categories-manager"
+import { ChangePasswordForm } from "./change-password-form"
 import type { User } from "@supabase/supabase-js"
 
 interface AdminDashboardProps {
@@ -32,14 +33,14 @@ export function AdminDashboard({ user, initialCategories, initialProducts }: Adm
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-3xl md:text-4xl font-bold">Admin Dashboard</h1>
           <p className="text-muted-foreground mt-2">Manage products and categories</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="text-sm text-muted-foreground">
-            Logged in as: <span className="font-medium text-foreground">{user.email}</span>
+            Logged in as: <span className="font-medium text-foreground block sm:inline">{user.email}</span>
           </div>
           <Button variant="outline" onClick={handleLogout} disabled={isLoggingOut}>
             <LogOut className="mr-2" size={16} />
@@ -77,6 +78,7 @@ export function AdminDashboard({ user, initialCategories, initialProducts }: Adm
         <TabsList>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="password">Change Password</TabsTrigger>
         </TabsList>
 
         <TabsContent value="products">
@@ -85,6 +87,10 @@ export function AdminDashboard({ user, initialCategories, initialProducts }: Adm
 
         <TabsContent value="categories">
           <CategoriesManager initialCategories={initialCategories} />
+        </TabsContent>
+
+        <TabsContent value="password">
+          <ChangePasswordForm />
         </TabsContent>
       </Tabs>
     </div>

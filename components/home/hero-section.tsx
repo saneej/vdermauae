@@ -1,52 +1,31 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 
 export function HeroSection() {
-  const parallaxRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  })
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!parallaxRef.current) return
-      const scrolled = window.scrollY
-      const parallaxElements = parallaxRef.current.querySelectorAll("[data-parallax]")
-
-      parallaxElements.forEach((el) => {
-        const speed = Number.parseFloat(el.getAttribute("data-parallax") || "0")
-        const yPos = -(scrolled * speed)
-        ;(el as HTMLElement).style.transform = `translateY(${yPos}px)`
-      })
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.5, 0])
 
   return (
-    <section
-      ref={parallaxRef}
-      className="relative min-h-screen flex items-center overflow-hidden parallax-container pt-20"
-    >
+    <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden pt-20">
       <motion.div
-        data-parallax="0.6"
+        style={{ y, opacity }}
         className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5"
-        animate={{
-          backgroundPosition: ["0% 0%", "100% 100%"],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Number.POSITIVE_INFINITY,
-          repeatType: "reverse",
-        }}
       />
 
       <motion.div
-        data-parallax="0.4"
+        style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "30%"]) }}
         className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
@@ -59,7 +38,7 @@ export function HeroSection() {
         }}
       />
       <motion.div
-        data-parallax="0.3"
+        style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "40%"]) }}
         className="absolute bottom-20 left-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
         animate={{
           scale: [1, 1.3, 1],
@@ -74,7 +53,7 @@ export function HeroSection() {
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
+          <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "20%"]) }} className="space-y-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -92,7 +71,7 @@ export function HeroSection() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-5xl lg:text-7xl font-bold leading-tight text-balance"
             >
-              Innovate to <span className="text-primary">elevate care</span>
+              Innovate to <span className="text-primary">Elevate Care</span>
             </motion.h1>
 
             <motion.p
@@ -101,8 +80,7 @@ export function HeroSection() {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="text-xl text-muted-foreground leading-relaxed max-w-xl"
             >
-              Premium medical equipment and supplies for aesthetic medicine, dermatology, and clinical procedures.
-              Trusted by healthcare professionals worldwide.
+              Premium medical equipment trusted worldwide
             </motion.p>
 
             <motion.div
@@ -148,10 +126,10 @@ export function HeroSection() {
                 <div className="text-sm text-muted-foreground">Support</div>
               </motion.div>
             </motion.div>
-          </div>
+          </motion.div>
 
           <motion.div
-            data-parallax="0.2"
+            style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "15%"]) }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.3 }}

@@ -116,7 +116,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="hover:text-primary transition-colors"
               >
-                From the desk of <span className="font-medium">Saneejified</span>
+                From the desk of <span className="font-medium text-primary">Saneejified</span>
               </a>
             </div>
           </div>

@@ -10,10 +10,11 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Pencil, Trash2 } from "lucide-react"
+import { Plus, Pencil, Trash2, Trash } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Switch } from "@/components/ui/switch"
+import { Checkbox } from "@/components/ui/checkbox"
 
 interface Product {
   id: string
@@ -40,6 +41,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
   const [products, setProducts] = useState(initialProducts)
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set())
   const [formData, setFormData] = useState({
     name: "",
     category_id: "",
@@ -51,6 +53,43 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
     is_coming_soon: false,
     display_order: 0,
   })
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedProducts(new Set(products.map((p) => p.id)))
+    } else {
+      setSelectedProducts(new Set())
+    }
+  }
+
+  const handleSelectProduct = (productId: string, checked: boolean) => {
+    const newSelected = new Set(selectedProducts)
+    if (checked) {
+      newSelected.add(productId)
+    } else {
+      newSelected.delete(productId)
+    }
+    setSelectedProducts(newSelected)
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedProducts.size === 0) {
+      alert("Please select products to delete")
+      return
+    }
+
+    if (!confirm(`Are you sure you want to delete ${selectedProducts.size} product(s)?`)) return
+
+    const { error } = await supabase.from("products").delete().in("id", Array.from(selectedProducts))
+
+    if (error) {
+      alert("Error deleting products: " + error.message)
+      return
+    }
+
+    setSelectedProducts(new Set())
+    router.refresh()
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -145,6 +184,8 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
       display_order: 0,
     })
   }
+
+  const allSelected = products.length > 0 && selectedProducts.size === products.length
 
   return (
     <div className="space-y-6">
@@ -269,10 +310,27 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
           </CardContent>
         </Card>
       ) : (
-        <Button onClick={() => setIsAdding(true)}>
-          <Plus className="mr-2" size={16} />
-          Add New Product
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={() => setIsAdding(true)}>
+            <Plus className="mr-2" size={16} />
+            Add New Product
+          </Button>
+          {selectedProducts.size > 0 && (
+            <Button variant="destructive" onClick={handleBulkDelete}>
+              <Trash className="mr-2" size={16} />
+              Delete Selected ({selectedProducts.size})
+            </Button>
+          )}
+        </div>
+      )}
+
+      {products.length > 0 && !isAdding && (
+        <div className="flex items-center space-x-2 p-4 bg-muted/50 rounded-lg">
+          <Checkbox id="select-all" checked={allSelected} onCheckedChange={handleSelectAll} />
+          <Label htmlFor="select-all" className="cursor-pointer">
+            Select All Products ({products.length})
+          </Label>
+        </div>
       )}
 
       {/* Products List */}
@@ -280,7 +338,12 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
         {products.map((product) => (
           <Card key={product.id}>
             <CardContent className="pt-6">
-              <div className="flex items-start justify-between">
+              <div className="flex items-start gap-4">
+                <Checkbox
+                  checked={selectedProducts.has(product.id)}
+                  onCheckedChange={(checked) => handleSelectProduct(product.id, checked as boolean)}
+                  className="mt-1"
+                />
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-lg font-semibold">{product.name}</h3>
