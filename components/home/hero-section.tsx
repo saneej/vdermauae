@@ -78,9 +78,9 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-xl text-muted-foreground leading-relaxed max-w-xl"
+              className="text-lg text-muted-foreground leading-relaxed max-w-xl"
             >
-              Premium medical equipment trusted worldwide
+              Trusted worldwide for excellence in medical innovation
             </motion.p>
 
             <motion.div

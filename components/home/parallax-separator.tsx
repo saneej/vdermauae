@@ -10,9 +10,9 @@ export function ParallaxSeparator() {
     offset: ["start end", "end start"],
   })
 
-  const y1 = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"])
-  const y2 = useTransform(scrollYProgress, [0, 1], ["-30%", "30%"])
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 1, 0.3])
+  const y1 = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"])
+  const y2 = useTransform(scrollYProgress, [0, 1], ["-25%", "25%"])
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.2, 1, 1, 0.2])
 
   return (
     <div

@@ -28,6 +28,7 @@ interface Product {
   features: string[] | null
   badges: string[] | null
   is_coming_soon: boolean
+  is_featured: boolean
   display_order: number
 }
 
@@ -124,6 +125,7 @@ export default function ProductsPage() {
       const { data, error: fetchError } = await supabase
         .from("products")
         .select("*")
+        .eq("is_featured", true)
         .eq("is_coming_soon", false)
         .order("display_order", { ascending: true })
         .limit(4)
@@ -161,12 +163,12 @@ export default function ProductsPage() {
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5 sticky top-20 z-0"
+        className="py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative z-10"
       >
         <div className="container mx-auto px-4 lg:px-8">
           <ScrollReveal animation="fade-up">
             <div className="max-w-3xl mx-auto text-center space-y-6">
-              <h1 className="text-5xl lg:text-6xl font-bold text-balance">Our Products</h1>
+              <h1 className="text-5xl lg:text-6xl font-bold text-balance">Product Categories</h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
                 Premium medical equipment and supplies for aesthetic medicine, dermatology, and clinical procedures. All
                 products are CE/ISO certified and meet international quality standards.
@@ -410,7 +412,7 @@ export default function ProductsPage() {
                   <motion.div
                     key={product.id}
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.05 }}
                     className="group bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-border/50"
                   >
@@ -481,7 +483,7 @@ export default function ProductsPage() {
 
       {/* CTA Section with Parallax */}
       <ParallaxSection>
-        <section className="py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative z-10">
+        <section className="py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative z-20">
           <div className="container mx-auto px-4 lg:px-8">
             <ScrollReveal animation="fade-up">
               <div className="max-w-3xl mx-auto text-center space-y-6">
@@ -506,8 +508,8 @@ function ParallaxSection({ children }: { children: React.ReactNode }) {
     offset: ["start end", "end start"],
   })
 
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [50, 0, 0, -50])
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
+  const y = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [40, 0, 0, -40])
 
   return (
     <motion.div ref={ref} style={{ opacity, y }}>

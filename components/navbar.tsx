@@ -107,12 +107,12 @@ export function Navbar() {
             transition={{
               type: "tween",
               duration: 0.7,
-              ease: [0.19, 1, 0.22, 1], // Enhanced easeOutExpo for ultra-smooth feel
+              ease: [0.19, 1, 0.22, 1],
             }}
             className="fixed inset-0 bg-background z-[55] lg:hidden overflow-hidden"
           >
             <div className="container mx-auto px-6 h-full flex flex-col justify-between py-6">
-              {/* Logo at top */}
+              {/* Logo and Close Button at top */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -128,6 +128,13 @@ export function Navbar() {
                     className="h-7 w-auto"
                   />
                 </Link>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-foreground hover:text-primary transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X size={28} />
+                </button>
               </motion.div>
 
               <div className="flex-1 flex flex-col justify-center space-y-8">
