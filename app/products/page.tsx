@@ -35,13 +35,19 @@ export default function ProductsPage() {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
   const [subcategories, setSubcategories] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  const supabase = supabaseUrl && supabaseAnonKey ? createBrowserClient(supabaseUrl, supabaseAnonKey) : null
 
   useEffect(() => {
+    if (!supabase) {
+      setError("Database connection not configured")
+      setLoading(false)
+      return
+    }
     fetchCategories()
   }, [])
 
@@ -52,25 +58,48 @@ export default function ProductsPage() {
   }, [selectedCategory])
 
   async function fetchCategories() {
+    if (!supabase) return
+
     setLoading(true)
-    const { data } = await supabase.from("categories").select("*").order("display_order", { ascending: true })
-    setCategories(data || [])
-    setLoading(false)
+    setError(null)
+    try {
+      const { data, error: fetchError } = await supabase
+        .from("categories")
+        .select("*")
+        .order("display_order", { ascending: true })
+
+      if (fetchError) throw fetchError
+      setCategories(data || [])
+    } catch (err) {
+      console.error("Error fetching categories:", err)
+      setError("Failed to load categories")
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function fetchProductsByCategory(categoryId: string) {
-    const { data } = await supabase
-      .from("products")
-      .select("*")
-      .eq("category_id", categoryId)
-      .order("display_order", { ascending: true })
+    if (!supabase) return
 
-    const productList = data || []
-    setProducts(productList)
+    try {
+      const { data, error: fetchError } = await supabase
+        .from("products")
+        .select("*")
+        .eq("category_id", categoryId)
+        .order("display_order", { ascending: true })
 
-    // Extract unique subcategories
-    const uniqueSubcategories = Array.from(new Set(productList.map((p) => p.subcategory).filter(Boolean))) as string[]
-    setSubcategories(uniqueSubcategories)
+      if (fetchError) throw fetchError
+
+      const productList = data || []
+      setProducts(productList)
+
+      // Extract unique subcategories
+      const uniqueSubcategories = Array.from(new Set(productList.map((p) => p.subcategory).filter(Boolean))) as string[]
+      setSubcategories(uniqueSubcategories)
+    } catch (err) {
+      console.error("Error fetching products:", err)
+      setError("Failed to load products")
+    }
   }
 
   function handleCategoryClick(category: Category) {
@@ -144,6 +173,23 @@ export default function ProductsPage() {
             {loading ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">Loading categories...</p>
+              </div>
+            ) : error ? (
+              <div className="max-w-2xl mx-auto text-center py-12 space-y-6">
+                <div className="flex justify-center">
+                  <div className="rounded-full bg-destructive/10 p-6">
+                    <AlertCircle className="w-12 h-12 text-destructive" />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-2xl font-bold">Unable to Load Products</h3>
+                  <p className="text-muted-foreground leading-relaxed">{error}</p>
+                </div>
+                <div className="pt-4">
+                  <Button size="lg" onClick={() => window.location.reload()} className="gap-2">
+                    Try Again
+                  </Button>
+                </div>
               </div>
             ) : categories.length === 0 ? (
               <div className="max-w-2xl mx-auto text-center py-12 space-y-6">
