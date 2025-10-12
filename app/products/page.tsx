@@ -276,7 +276,7 @@ export default function ProductsPage() {
       {!selectedCategory && (
         <ParallaxSection>
           <section className="py-24 bg-background relative z-10">
-            <div className="container mx-auto px-4 lg:px-8">
+            <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
               {loading ? (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground">Loading categories...</p>
@@ -319,36 +319,47 @@ export default function ProductsPage() {
                   </div>
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {categories.map((category) => (
-                    <motion.button
-                      key={category.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4 }}
-                      onClick={() => handleCategoryClick(category)}
-                      className="group bg-card rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 border border-border/50 text-left w-full"
-                    >
-                      <div className="space-y-4">
-                        {category.icon && (
-                          <div className="text-5xl group-hover:scale-110 transition-transform duration-300">
-                            {category.icon}
+                <>
+                  <ScrollReveal animation="fade-up">
+                    <div className="text-center mb-16 space-y-4">
+                      <h2 className="text-4xl lg:text-5xl font-bold">Categories</h2>
+                      <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                        Browse our comprehensive range of medical equipment by category
+                      </p>
+                    </div>
+                  </ScrollReveal>
+
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {categories.map((category) => (
+                      <motion.button
+                        key={category.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        onClick={() => handleCategoryClick(category)}
+                        className="group bg-card rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 border border-border/50 text-left w-full"
+                      >
+                        <div className="space-y-4">
+                          {category.icon && (
+                            <div className="text-5xl group-hover:scale-110 transition-transform duration-300">
+                              {category.icon}
+                            </div>
+                          )}
+                          <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
+                            {category.name}
+                          </h3>
+                          {category.description && (
+                            <p className="text-muted-foreground leading-relaxed">{category.description}</p>
+                          )}
+                          <div className="flex items-center gap-2 text-primary font-medium">
+                            <span>Explore</span>
+                            <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                           </div>
-                        )}
-                        <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
-                          {category.name}
-                        </h3>
-                        {category.description && (
-                          <p className="text-muted-foreground leading-relaxed">{category.description}</p>
-                        )}
-                        <div className="flex items-center gap-2 text-primary font-medium">
-                          <span>Explore</span>
-                          <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                         </div>
-                      </div>
-                    </motion.button>
-                  ))}
-                </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </section>

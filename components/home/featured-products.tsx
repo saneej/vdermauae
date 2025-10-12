@@ -46,7 +46,7 @@ const products = [
 export function FeaturedProducts() {
   return (
     <section className="py-24">
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
         <ScrollReveal animation="fade-up">
           <div className="flex justify-between items-end mb-16">
             <div className="space-y-4">
@@ -64,7 +64,7 @@ export function FeaturedProducts() {
           </div>
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 overflow-hidden">
           {products.map((product, index) => (
             <ScrollReveal key={product.name} animation="zoom-in" delay={index * 0.1} duration={0.8}>
               <motion.div
