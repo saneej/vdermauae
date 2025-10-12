@@ -129,10 +129,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Fix mobile horizontal scroll */
+    overflow-x: hidden;
   }
 
   html {
     scroll-behavior: smooth;
+    /* Fix mobile horizontal scroll */
+    overflow-x: hidden;
   }
 }
 

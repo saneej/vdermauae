@@ -181,6 +181,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <head>
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png" />
+        <link rel="apple-touch-icon" href="/images/icon.png" />
+        <link rel="shortcut icon" href="/images/icon.png" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
         <link rel="canonical" href="https://vdermauae.com" />
