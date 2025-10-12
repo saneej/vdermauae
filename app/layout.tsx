@@ -189,7 +189,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
         <link rel="canonical" href="https://vdermauae.com" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer />
+        <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer />
       </head>
       <body className="font-sans antialiased">
         <Suspense fallback={<div>Loading...</div>}>
@@ -202,18 +202,21 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               window.addEventListener('load', function() {
-                if (typeof Lenis !== 'undefined') {
+                // Check for reduced motion preference
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                
+                if (typeof Lenis !== 'undefined' && !prefersReducedMotion) {
                   const lenis = new Lenis({
-                    duration: 1.8,
-                    easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+                    duration: 1.2,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                     direction: 'vertical',
                     gestureDirection: 'vertical',
                     smooth: true,
                     smoothTouch: false,
                     touchMultiplier: 2,
                     infinite: false,
-                    lerp: 0.08,
-                    wheelMultiplier: 0.8,
+                    lerp: 0.1,
+                    wheelMultiplier: 1,
                   });
 
                   function raf(time) {
@@ -223,19 +226,35 @@ export default function RootLayout({
 
                   requestAnimationFrame(raf);
 
-                  // Sync with anchor links
+                  // Sync with anchor links for smooth navigation
                   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     anchor.addEventListener('click', function (e) {
-                      e.preventDefault();
-                      const target = document.querySelector(this.getAttribute('href'));
-                      if (target) {
-                        lenis.scrollTo(target, { offset: -80, duration: 2 });
+                      const href = this.getAttribute('href');
+                      if (href && href !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                          lenis.scrollTo(target, { offset: -80, duration: 1.5 });
+                        }
                       }
                     });
                   });
 
-                  // Expose lenis globally for debugging
+                  // Handle browser back/forward navigation
+                  window.addEventListener('popstate', () => {
+                    if (window.location.hash) {
+                      const target = document.querySelector(window.location.hash);
+                      if (target) {
+                        lenis.scrollTo(target, { offset: -80, duration: 1.5 });
+                      }
+                    }
+                  });
+
+                  // Expose lenis globally for debugging and external control
                   window.lenis = lenis;
+                  
+                  // Add lenis class to html for CSS targeting
+                  document.documentElement.classList.add('lenis', 'lenis-smooth');
                 }
               });
             `,

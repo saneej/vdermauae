@@ -6,10 +6,11 @@ import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { CheckCircle2, Clock, ArrowLeft, ChevronRight, AlertCircle } from "lucide-react"
+import { ArrowLeft, ChevronRight, AlertCircle } from "lucide-react"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { createBrowserClient } from "@supabase/ssr"
 import { motion, useScroll, useTransform } from "framer-motion"
+import { ProductDetailModal } from "@/components/product-detail-modal"
 
 interface Category {
   id: string
@@ -43,6 +44,8 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const heroRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -151,6 +154,11 @@ export default function ProductsPage() {
     }
   }
 
+  function handleProductClick(product: Product) {
+    setSelectedProduct(product)
+    setIsModalOpen(true)
+  }
+
   const filteredProducts = selectedSubcategory
     ? products.filter((p) => p.subcategory === selectedSubcategory)
     : selectedCategory && subcategories.length === 0
@@ -177,6 +185,89 @@ export default function ProductsPage() {
           </ScrollReveal>
         </div>
       </motion.section>
+
+      {/* Main Categories View with Parallax */}
+      {!selectedCategory && (
+        <ParallaxSection>
+          <section className="py-24 bg-background relative z-10">
+            <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
+              {loading ? (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">Loading categories...</p>
+                </div>
+              ) : error ? (
+                <div className="max-w-2xl mx-auto text-center py-12 space-y-6">
+                  <div className="flex justify-center">
+                    <div className="rounded-full bg-destructive/10 p-6">
+                      <AlertCircle className="w-12 h-12 text-destructive" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-bold">Unable to Load Products</h3>
+                    <p className="text-muted-foreground leading-relaxed">{error}</p>
+                  </div>
+                  <div className="pt-4">
+                    <Button size="lg" onClick={() => window.location.reload()} className="gap-2">
+                      Try Again
+                    </Button>
+                  </div>
+                </div>
+              ) : categories.length === 0 ? (
+                <div className="max-w-2xl mx-auto text-center py-12 space-y-6">
+                  <div className="flex justify-center">
+                    <div className="rounded-full bg-primary/10 p-6">
+                      <AlertCircle className="w-12 h-12 text-primary" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-bold">No Products Available Yet</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      The product catalog is currently being set up. Please check back soon or contact us for more
+                      information about our available products.
+                    </p>
+                  </div>
+                  <div className="pt-4">
+                    <Button size="lg" className="gap-2">
+                      Contact Us
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {categories.map((category) => (
+                    <motion.button
+                      key={category.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4 }}
+                      onClick={() => handleCategoryClick(category)}
+                      className="group bg-card rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 border border-border/50 text-left w-full"
+                    >
+                      <div className="space-y-4">
+                        {category.icon && (
+                          <div className="text-5xl group-hover:scale-110 transition-transform duration-300">
+                            {category.icon}
+                          </div>
+                        )}
+                        <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
+                          {category.name}
+                        </h3>
+                        {category.description && (
+                          <p className="text-muted-foreground leading-relaxed">{category.description}</p>
+                        )}
+                        <div className="flex items-center gap-2 text-primary font-medium">
+                          <span>Explore</span>
+                          <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        </ParallaxSection>
+      )}
 
       {/* Featured Products Section with Parallax */}
       {!selectedCategory && featuredProducts.length > 0 && (
@@ -274,100 +365,6 @@ export default function ProductsPage() {
         </ParallaxSection>
       )}
 
-      {/* Main Categories View with Parallax */}
-      {!selectedCategory && (
-        <ParallaxSection>
-          <section className="py-24 bg-background relative z-10">
-            <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
-              {loading ? (
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground">Loading categories...</p>
-                </div>
-              ) : error ? (
-                <div className="max-w-2xl mx-auto text-center py-12 space-y-6">
-                  <div className="flex justify-center">
-                    <div className="rounded-full bg-destructive/10 p-6">
-                      <AlertCircle className="w-12 h-12 text-destructive" />
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <h3 className="text-2xl font-bold">Unable to Load Products</h3>
-                    <p className="text-muted-foreground leading-relaxed">{error}</p>
-                  </div>
-                  <div className="pt-4">
-                    <Button size="lg" onClick={() => window.location.reload()} className="gap-2">
-                      Try Again
-                    </Button>
-                  </div>
-                </div>
-              ) : categories.length === 0 ? (
-                <div className="max-w-2xl mx-auto text-center py-12 space-y-6">
-                  <div className="flex justify-center">
-                    <div className="rounded-full bg-primary/10 p-6">
-                      <AlertCircle className="w-12 h-12 text-primary" />
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <h3 className="text-2xl font-bold">No Products Available Yet</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      The product catalog is currently being set up. Please check back soon or contact us for more
-                      information about our available products.
-                    </p>
-                  </div>
-                  <div className="pt-4">
-                    <Button size="lg" className="gap-2">
-                      Contact Us
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <ScrollReveal animation="fade-up">
-                    <div className="text-center mb-16 space-y-4">
-                      <h2 className="text-4xl lg:text-5xl font-bold">Categories</h2>
-                      <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                        Browse our comprehensive range of medical equipment by category
-                      </p>
-                    </div>
-                  </ScrollReveal>
-
-                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {categories.map((category) => (
-                      <motion.button
-                        key={category.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4 }}
-                        onClick={() => handleCategoryClick(category)}
-                        className="group bg-card rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 border border-border/50 text-left w-full"
-                      >
-                        <div className="space-y-4">
-                          {category.icon && (
-                            <div className="text-5xl group-hover:scale-110 transition-transform duration-300">
-                              {category.icon}
-                            </div>
-                          )}
-                          <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">
-                            {category.name}
-                          </h3>
-                          {category.description && (
-                            <p className="text-muted-foreground leading-relaxed">{category.description}</p>
-                          )}
-                          <div className="flex items-center gap-2 text-primary font-medium">
-                            <span>Explore</span>
-                            <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        </div>
-                      </motion.button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </section>
-        </ParallaxSection>
-      )}
-
       {/* Subcategories View with Parallax */}
       {selectedCategory && subcategories.length > 0 && !selectedSubcategory && (
         <ParallaxSection>
@@ -402,78 +399,41 @@ export default function ProductsPage() {
         </ParallaxSection>
       )}
 
-      {/* Products Grid with Parallax */}
+      {/* Products List - Simple View */}
       {filteredProducts.length > 0 && (
         <ParallaxSection>
           <section className="py-24 bg-background relative z-10">
-            <div className="container mx-auto px-4 lg:px-8">
-              <div className="grid lg:grid-cols-2 gap-12">
+            <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
+              <div className="space-y-4">
                 {filteredProducts.map((product, index) => (
-                  <motion.div
+                  <motion.button
                     key={product.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.05 }}
-                    className="group bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-border/50"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    onClick={() => handleProductClick(product)}
+                    className="w-full group bg-card rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-border/50 text-left"
                   >
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {/* Product Image */}
-                      <div className="relative h-80 md:h-full bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center p-8">
-                        {product.is_coming_soon && (
-                          <div className="absolute top-4 right-4 z-10">
-                            <Badge variant="secondary" className="flex items-center gap-1">
-                              <Clock size={14} />
-                              Coming Soon
-                            </Badge>
-                          </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">{product.subcategory || selectedCategory?.name}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {product.badges && product.badges.length > 0 && (
+                          <Badge variant="secondary" className="text-xs">
+                            {product.badges[0]}
+                          </Badge>
                         )}
-                        <Image
-                          src={
-                            product.image_url ||
-                            `/placeholder.svg?height=300&width=300&query=${encodeURIComponent(product.name) || "/placeholder.svg"}`
-                          }
-                          alt={product.name}
-                          width={300}
-                          height={300}
-                          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                        <ChevronRight
+                          size={20}
+                          className="text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all"
                         />
                       </div>
-
-                      {/* Product Details */}
-                      <div className="p-8 flex flex-col justify-center space-y-6">
-                        <div>
-                          <div className="text-sm text-primary font-medium mb-2">
-                            {product.subcategory || selectedCategory?.name}
-                          </div>
-                          <h2 className="text-3xl font-bold mb-3">{product.name}</h2>
-                          <p className="text-muted-foreground leading-relaxed">
-                            {product.description || "Premium medical equipment for professional use."}
-                          </p>
-                        </div>
-
-                        {product.badges && product.badges.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {product.badges.map((badge) => (
-                              <Badge key={badge} variant="secondary">
-                                {badge}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-
-                        {product.features && product.features.length > 0 && (
-                          <div className="space-y-3">
-                            {product.features.map((feature) => (
-                              <div key={feature} className="flex items-start gap-2">
-                                <CheckCircle2 className="text-primary flex-shrink-0 mt-0.5" size={18} />
-                                <span className="text-sm text-foreground">{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
                     </div>
-                  </motion.div>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -496,6 +456,14 @@ export default function ProductsPage() {
           </div>
         </section>
       </ParallaxSection>
+
+      {/* Product Detail Modal */}
+      <ProductDetailModal
+        product={selectedProduct}
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        categoryName={selectedCategory?.name}
+      />
     </main>
   )
 }
