@@ -47,11 +47,12 @@ export function Navbar() {
         }`}
       >
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between lg:justify-start h-20">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
             >
               <Link href="/" className="flex items-center gap-3 group">
                 <Image
@@ -65,7 +66,7 @@ export function Navbar() {
             </motion.div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-8 ml-auto">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}

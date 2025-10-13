@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Pencil, Trash2, Trash } from "lucide-react"
+import { Plus, Pencil, Trash2, Trash, Upload } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Switch } from "@/components/ui/switch"
@@ -26,6 +26,7 @@ interface Product {
   features: string[] | null
   badges: string[] | null
   is_coming_soon: boolean
+  is_featured: boolean
   display_order: number
   category_name?: string
 }
@@ -42,6 +43,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set())
+  const [uploadingImage, setUploadingImage] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     category_id: "",
@@ -51,6 +53,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
     features: "",
     badges: "",
     is_coming_soon: false,
+    is_featured: false,
     display_order: 0,
   })
 
@@ -91,6 +94,52 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
     router.refresh()
   }
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Check if file is an image
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file")
+      return
+    }
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image size should be less than 5MB")
+      return
+    }
+
+    setUploadingImage(true)
+
+    try {
+      // Create a unique file name
+      const fileExt = file.name.split(".").pop()
+      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
+      const filePath = `products/${fileName}`
+
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage.from("product-images").upload(filePath, file)
+
+      if (error) {
+        throw error
+      }
+
+      // Get public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("product-images").getPublicUrl(filePath)
+
+      // Update form data with the image URL
+      setFormData({ ...formData, image_url: publicUrl })
+    } catch (error: any) {
+      console.error("Error uploading image:", error)
+      alert("Error uploading image: " + (error.message || "Please ensure Supabase storage is configured"))
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -108,6 +157,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
             .filter((b) => b)
         : null,
       is_coming_soon: formData.is_coming_soon,
+      is_featured: formData.is_featured,
       display_order: formData.display_order,
     }
 
@@ -136,6 +186,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
       features: "",
       badges: "",
       is_coming_soon: false,
+      is_featured: false,
       display_order: 0,
     })
     router.refresh()
@@ -152,6 +203,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
       features: product.features?.join("\n") || "",
       badges: product.badges?.join(", ") || "",
       is_coming_soon: product.is_coming_soon,
+      is_featured: product.is_featured || false,
       display_order: product.display_order,
     })
     setIsAdding(true)
@@ -181,6 +233,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
       features: "",
       badges: "",
       is_coming_soon: false,
+      is_featured: false,
       display_order: 0,
     })
   }
@@ -240,12 +293,26 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="image_url">Image URL</Label>
-                  <Input
-                    id="image_url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  />
+                  <Label htmlFor="image_upload">Product Image</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="image_upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploadingImage}
+                      className="flex-1"
+                    />
+                    {uploadingImage && (
+                      <Button type="button" disabled size="sm">
+                        <Upload className="mr-2 h-4 w-4 animate-spin" />
+                        Uploading...
+                      </Button>
+                    )}
+                  </div>
+                  {formData.image_url && (
+                    <p className="text-xs text-muted-foreground truncate">Current: {formData.image_url}</p>
+                  )}
                 </div>
               </div>
 
@@ -291,13 +358,23 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is_coming_soon"
-                  checked={formData.is_coming_soon}
-                  onCheckedChange={(checked) => setFormData({ ...formData, is_coming_soon: checked })}
-                />
-                <Label htmlFor="is_coming_soon">Mark as Coming Soon</Label>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_coming_soon"
+                    checked={formData.is_coming_soon}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_coming_soon: checked })}
+                  />
+                  <Label htmlFor="is_coming_soon">Mark as Coming Soon</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_featured"
+                    checked={formData.is_featured}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
+                  />
+                  <Label htmlFor="is_featured">List product in featured section</Label>
+                </div>
               </div>
 
               <div className="flex gap-2">
@@ -348,6 +425,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-lg font-semibold">{product.name}</h3>
                     {product.is_coming_soon && <Badge variant="secondary">Coming Soon</Badge>}
+                    {product.is_featured && <Badge variant="default">Featured</Badge>}
                   </div>
                   <p className="text-sm text-muted-foreground mb-2">{product.subcategory || product.category_name}</p>
                   {product.description && <p className="text-sm mb-2">{product.description}</p>}
