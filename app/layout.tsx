@@ -51,21 +51,23 @@ export const metadata: Metadata = {
     siteName: "Vederma Medical Equipment Trading LLC",
     title: "Vederma Medical Equipment Trading LLC | Medical Equipment Supplier UAE",
     description:
-      "Leading medical equipment supplier in UAE. Premium aesthetic devices, PRP tubes, derma pens, and clinical instruments in Dubai.",
+      "Leading medical equipment supplier in UAE. Premium aesthetic devices, PRP tubes, derma pens, and clinical instruments in Dubai. Innovate to Elevate Care.",
     images: [
       {
-        url: "/images/logo-color.png",
+        url: "/images/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Vederma Medical Equipment Trading LLC",
+        alt: "Vederma Medical Equipment - PRP Tubes, Mesotherapy Needles, Derma Cannula - Innovate to Elevate Care",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Vederma Medical Equipment Trading LLC | Medical Equipment Supplier UAE",
-    description: "Leading medical equipment supplier in UAE. Premium aesthetic devices and clinical instruments.",
-    images: ["/images/logo-color.png"],
+    description:
+      "Leading medical equipment supplier in UAE. Premium aesthetic devices and clinical instruments. Innovate to Elevate Care.",
+    images: ["/images/og-image.png"],
+    creator: "@vdermauae",
   },
   robots: {
     index: true,
@@ -100,12 +102,14 @@ export default function RootLayout({
     alternateName: "Vederma UAE",
     url: "https://vdermauae.com",
     logo: "https://vdermauae.com/images/logo-color.png",
+    image: "https://vdermauae.com/images/og-image.png",
     description:
       "Leading medical equipment supplier in UAE specializing in aesthetic devices, PRP tubes, derma pens, and clinical instruments.",
     email: "info@vdermauae.com",
     telephone: "+971528955833",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "Al Qusais Industrial Area 3",
       addressLocality: "Dubai",
       addressCountry: "AE",
       addressRegion: "Dubai",
@@ -152,12 +156,12 @@ export default function RootLayout({
     "@type": "LocalBusiness",
     "@id": "https://vdermauae.com/#localbusiness",
     name: "Vederma Medical Equipments LLC",
-    image: "https://vdermauae.com/images/logo-color.png",
+    image: "https://vdermauae.com/images/og-image.png",
     telephone: "+971528955833",
     email: "info@vdermauae.com",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Dubai",
+      streetAddress: "Al Qusais Industrial Area 3",
       addressLocality: "Dubai",
       addressCountry: "AE",
     },

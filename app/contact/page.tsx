@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Mail, Phone, MapPin, Send } from "lucide-react"
+import { Mail, Phone, MapPin, Send, ExternalLink } from "lucide-react"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -229,41 +229,76 @@ ${formData.message}
               <p className="text-xl text-muted-foreground">Find us at Arkan Business Center in Al Qusais, Dubai</p>
             </div>
 
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-primary/10">
-              <div className="aspect-[16/9] md:aspect-[21/9] w-full">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3607.5234567890123!2d55.39358!3d25.296854!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d0005801c7f%3A0x781d0ce84e98aec9!2sVEDERMA%20LINE%20MEDICAL%20EQUIPMENTS%20TRADING%20LLC!5e0!3m2!1sen!2sae!4v1234567890123!5m2!1sen!2sae"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Vederma Medical Office Location"
-                  className="w-full h-full"
-                />
-              </div>
-
-              <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 bg-background/95 backdrop-blur-sm p-4 md:p-6 rounded-xl shadow-lg border border-border/50">
-                <div className="flex flex-col sm:flex-row items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                    <MapPin className="text-primary-foreground" size={24} />
+            {/* Location Card with Map Link */}
+            <div className="bg-card rounded-2xl border-2 border-primary/20 shadow-xl overflow-hidden">
+              <div className="p-6 md:p-8 space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-14 h-14 bg-primary rounded-xl flex items-center justify-center">
+                    <MapPin className="text-primary-foreground" size={28} />
                   </div>
-                  <div className="flex-1 w-full">
-                    <h3 className="font-bold text-base md:text-lg mb-1">VEDERMA LINE MEDICAL EQUIPMENTS TRADING LLC</h3>
-                    <p className="text-muted-foreground text-xs md:text-sm mb-3">
+                  <div className="flex-1">
+                    <h3 className="font-bold text-xl mb-2">VEDERMA LINE MEDICAL EQUIPMENTS TRADING LLC</h3>
+                    <p className="text-muted-foreground mb-4">
                       Al Qusais Industrial Area 3, Dubai, United Arab Emirates
                     </p>
-                    <Button asChild size="sm" className="w-full sm:w-auto">
-                      <a
-                        href="https://www.google.com/maps/place/79WW%2BP7X+VEDERMA+LINE+MEDICAL+EQUIPMENTS+TRADING+LLC+-+Al+Qusais+Ind.+Third+-+Al+Qusais+Industrial+Area+3+-+Dubai/data=!4m2!3m1!1s0x3e5f5d0005801c7f:0x781d0ce84e98aec9?utm_source=mstt_1&entry=gps&coh=192189&g_ep=CAESBzI1LjQxLjMYACCenQoqogEsOTQyNjc3MjcsOTQyOTIxOTUsOTQyODQ0ODEsOTQyMjMyOTksOTQyMTY0MTMsOTQyODA1NzYsOTQyMTI0OTYsOTQyMDczOTQsOTQyMDc1MDYsOTQyMDg1MDYsOTQyMTc1MjMsOTQyMTg2NTMsOTQyMjk4MzksOTQyNzUxNjgsOTQyNzk2MTksOTQyNjI3MzksNDcwODQzOTMsOTQyMTMyMDBCAkFF&skid=e1c01eea-60ab-4f27-b52f-3082db438754&g_st=awb"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Get Directions
-                      </a>
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button asChild className="flex-1 sm:flex-none">
+                        <a
+                          href="https://www.google.com/maps/place/79WW%2BP7X+VEDERMA+LINE+MEDICAL+EQUIPMENTS+TRADING+LLC+-+Al+Qusais+Ind.+Third+-+Al+Qusais+Industrial+Area+3+-+Dubai/data=!4m2!3m1!1s0x3e5f5d0005801c7f:0x781d0ce84e98aec9?utm_source=mstt_1&entry=gps&coh=192189&g_ep=CAESBzI1LjQxLjMYACCenQoqogEsOTQyNjc3MjcsOTQyOTIxOTUsOTQyODQ0ODEsOTQyMjMyOTksOTQyMTY0MTMsOTQyODA1NzYsOTQyMTI0OTYsOTQyMDczOTQsOTQyMDc1MDYsOTQyMDg1MDYsOTQyMTc1MjMsOTQyMTg2NTMsOTQyMjk4MzksOTQyNzUxNjgsOTQyNzk2MTksOTQyNjI3MzksNDcwODQzOTMsOTQyMTMyMDBCAkFF&skid=e1c01eea-60ab-4f27-b52f-3082db438754&g_st=awb"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <MapPin className="mr-2" size={18} />
+                          Open in Google Maps
+                        </a>
+                      </Button>
+                      <Button asChild variant="outline" className="flex-1 sm:flex-none bg-transparent">
+                        <a
+                          href="https://maps.apple.com/?address=Al%20Qusais%20Industrial%20Area%203,%20Dubai,%20UAE"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLink className="mr-2" size={18} />
+                          Open in Apple Maps
+                        </a>
+                      </Button>
+                    </div>
                   </div>
+                </div>
+
+                {/* Static Map Preview - Only on Desktop */}
+                <div className="hidden md:block rounded-xl overflow-hidden border-2 border-border/50">
+                  <a
+                    href="https://www.google.com/maps/place/79WW%2BP7X+VEDERMA+LINE+MEDICAL+EQUIPMENTS+TRADING+LLC+-+Al+Qusais+Ind.+Third+-+Al+Qusais+Industrial+Area+3+-+Dubai/data=!4m2!3m1!1s0x3e5f5d0005801c7f:0x781d0ce84e98aec9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block relative group"
+                  >
+                    <img
+                      src="https://maps.googleapis.com/maps/api/staticmap?center=25.296854,55.39358&zoom=15&size=800x400&markers=color:red%7C25.296854,55.39358&key=YOUR_API_KEY"
+                      alt="Vederma Medical Office Location Map"
+                      className="w-full h-64 object-cover group-hover:opacity-90 transition-opacity"
+                      onError={(e) => {
+                        // Fallback to a placeholder if static map fails
+                        e.currentTarget.src = "/dubai-map-location.jpg"
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-background/95 px-6 py-3 rounded-lg shadow-lg">
+                        <p className="font-semibold flex items-center gap-2">
+                          <ExternalLink size={18} />
+                          Click to open in Google Maps
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+
+                {/* Mobile: Direct Links Only */}
+                <div className="md:hidden p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Tap the buttons above to open the location in your preferred maps app
+                  </p>
                 </div>
               </div>
             </div>
