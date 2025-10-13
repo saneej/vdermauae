@@ -6,7 +6,8 @@ import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, ChevronRight, AlertCircle } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { ArrowLeft, ChevronRight, AlertCircle, Search, X } from "lucide-react"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { createBrowserClient } from "@supabase/ssr"
 import { motion, useScroll, useTransform } from "framer-motion"
@@ -60,6 +61,11 @@ export default function ProductsPage() {
 
   const supabase = supabaseUrl && supabaseAnonKey ? createBrowserClient(supabaseUrl, supabaseAnonKey) : null
 
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<Product[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [allProducts, setAllProducts] = useState<Product[]>([])
+
   useEffect(() => {
     if (!supabase) {
       setError("Database connection not configured. Please add Supabase environment variables to Vercel.")
@@ -68,6 +74,7 @@ export default function ProductsPage() {
     }
     fetchCategories()
     fetchFeaturedProducts()
+    fetchAllProducts()
   }, [])
 
   useEffect(() => {
@@ -75,6 +82,22 @@ export default function ProductsPage() {
       fetchProductsByCategory(selectedCategory.id)
     }
   }, [selectedCategory])
+
+  async function fetchAllProducts() {
+    if (!supabase) return
+
+    try {
+      const { data, error: fetchError } = await supabase
+        .from("products")
+        .select("*")
+        .order("display_order", { ascending: true })
+
+      if (fetchError) throw fetchError
+      setAllProducts(data || [])
+    } catch (err) {
+      console.error("Error fetching all products:", err)
+    }
+  }
 
   async function fetchCategories() {
     if (!supabase) return
@@ -159,6 +182,76 @@ export default function ProductsPage() {
     setIsModalOpen(true)
   }
 
+  useEffect(() => {
+    if (searchQuery.trim().length === 0) {
+      setSearchResults([])
+      setIsSearching(false)
+      return
+    }
+
+    setIsSearching(true)
+    const query = searchQuery.toLowerCase().trim()
+
+    // Common alternative names and synonyms
+    const synonyms: Record<string, string[]> = {
+      prp: ["platelet rich plasma", "platelet-rich plasma", "prp tube", "prp kit"],
+      filler: ["dermal filler", "hyaluronic acid", "ha filler", "facial filler"],
+      botox: ["botulinum toxin", "neurotoxin", "wrinkle treatment"],
+      cannula: ["blunt needle", "microcannula", "injection cannula"],
+      needle: ["sharp needle", "injection needle", "hypodermic needle"],
+      mesotherapy: ["meso", "mesotheraphy", "micro injection"],
+      pdo: ["thread lift", "polydioxanone", "pdo thread"],
+      derma: ["dermapen", "microneedling", "dermaroller"],
+      syringe: ["injection syringe", "medical syringe"],
+    }
+
+    // Find matching products
+    const results = allProducts.filter((product) => {
+      const productName = product.name.toLowerCase()
+      const productDesc = (product.description || "").toLowerCase()
+      const productSubcat = (product.subcategory || "").toLowerCase()
+      const productBadges = (product.badges || []).join(" ").toLowerCase()
+
+      // Direct match
+      if (
+        productName.includes(query) ||
+        productDesc.includes(query) ||
+        productSubcat.includes(query) ||
+        productBadges.includes(query)
+      ) {
+        return true
+      }
+
+      // Synonym match
+      for (const [key, values] of Object.entries(synonyms)) {
+        if (query.includes(key) || key.includes(query)) {
+          return values.some(
+            (synonym) =>
+              productName.includes(synonym) ||
+              productDesc.includes(synonym) ||
+              productSubcat.includes(synonym) ||
+              productBadges.includes(synonym),
+          )
+        }
+      }
+
+      // Fuzzy match - check if query words are in product
+      const queryWords = query.split(" ")
+      return queryWords.some(
+        (word) =>
+          word.length > 2 && (productName.includes(word) || productDesc.includes(word) || productSubcat.includes(word)),
+      )
+    })
+
+    setSearchResults(results)
+  }, [searchQuery, allProducts])
+
+  function clearSearch() {
+    setSearchQuery("")
+    setSearchResults([])
+    setIsSearching(false)
+  }
+
   const filteredProducts = selectedSubcategory
     ? products.filter((p) => p.subcategory === selectedSubcategory)
     : selectedCategory && subcategories.length === 0
@@ -181,13 +274,109 @@ export default function ProductsPage() {
                 Premium medical equipment and supplies for aesthetic medicine, dermatology, and clinical procedures. All
                 products are CE/ISO certified and meet international quality standards.
               </p>
+
+              <div className="max-w-xl mx-auto pt-4">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+                  <Input
+                    type="text"
+                    placeholder="Search products (e.g., PRP, filler, cannula, mesotherapy...)"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-12 pr-12 h-14 text-lg rounded-full bg-background/80 backdrop-blur-sm border-2 focus:border-primary transition-all"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={clearSearch}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </ScrollReveal>
         </div>
       </motion.section>
 
+      {isSearching && searchQuery.trim().length > 0 && (
+        <ParallaxSection>
+          <section className="py-24 bg-background relative z-10">
+            <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
+              {searchResults.length > 0 ? (
+                <div className="space-y-6">
+                  <div className="text-center space-y-2">
+                    <h2 className="text-2xl font-bold">
+                      {searchResults.length === 1 ? "Found 1 product" : `Found ${searchResults.length} products`}
+                    </h2>
+                    <p className="text-muted-foreground">
+                      {searchResults.length > 1
+                        ? "Are you looking for one of these?"
+                        : "Is this what you're looking for?"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {searchResults.map((product, index) => (
+                      <motion.button
+                        key={product.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        onClick={() => handleProductClick(product)}
+                        className="w-full group bg-card rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-border/50 text-left"
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex-1 space-y-2">
+                            <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
+                              {product.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">{product.subcategory}</p>
+                            {product.description && (
+                              <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3">
+                            {product.badges && product.badges.length > 0 && (
+                              <Badge variant="secondary" className="text-xs">
+                                {product.badges[0]}
+                              </Badge>
+                            )}
+                            <ChevronRight
+                              size={20}
+                              className="text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all"
+                            />
+                          </div>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center space-y-4 py-12">
+                  <div className="flex justify-center">
+                    <div className="rounded-full bg-muted p-6">
+                      <Search className="w-12 h-12 text-muted-foreground" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold">No products found</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    We couldn't find any products matching "{searchQuery}". Try searching with different keywords like
+                    PRP, filler, cannula, or mesotherapy.
+                  </p>
+                  <Button onClick={clearSearch} variant="outline" className="mt-4 bg-transparent">
+                    Clear Search
+                  </Button>
+                </div>
+              )}
+            </div>
+          </section>
+        </ParallaxSection>
+      )}
+
       {/* Main Categories View with Parallax */}
-      {!selectedCategory && (
+      {!selectedCategory && !isSearching && (
         <ParallaxSection>
           <section className="py-24 bg-background relative z-10">
             <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
@@ -270,7 +459,7 @@ export default function ProductsPage() {
       )}
 
       {/* Featured Products Section with Parallax */}
-      {!selectedCategory && featuredProducts.length > 0 && (
+      {!selectedCategory && !isSearching && featuredProducts.length > 0 && (
         <ParallaxSection>
           <section className="py-24 bg-background relative z-10">
             <div className="container mx-auto px-4 lg:px-8">
