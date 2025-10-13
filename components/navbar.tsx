@@ -47,7 +47,7 @@ export function Navbar() {
         }`}
       >
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between lg:justify-start h-20">
+          <div className="flex items-center justify-between h-20">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -65,7 +65,6 @@ export function Navbar() {
               </Link>
             </motion.div>
 
-            {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-8 ml-auto">
               {navLinks.map((link) => (
                 <Link
@@ -77,9 +76,6 @@ export function Navbar() {
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
                 </Link>
               ))}
-            </div>
-
-            <div className="hidden lg:block">
               <Button asChild className="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
                 <Link href="/contact">Contact Us</Link>
               </Button>

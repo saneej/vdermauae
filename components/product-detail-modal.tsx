@@ -29,6 +29,8 @@ interface ProductDetailModalProps {
 export function ProductDetailModal({ product, open, onOpenChange, categoryName }: ProductDetailModalProps) {
   if (!product) return null
 
+  console.log("[v0] Product image URL:", product.image_url)
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -50,13 +52,16 @@ export function ProductDetailModal({ product, open, onOpenChange, categoryName }
             )}
             <Image
               src={
-                product.image_url ||
-                `/placeholder.svg?height=400&width=400&query=${encodeURIComponent(product.name) || "/placeholder.svg"}`
+                product.image_url || `/placeholder.svg?height=400&width=400&query=${encodeURIComponent(product.name)}`
               }
               alt={product.name}
               width={400}
               height={400}
               className="w-full h-full object-contain"
+              onError={(e) => {
+                console.log("[v0] Image failed to load:", product.image_url)
+                e.currentTarget.src = `/placeholder.svg?height=400&width=400&query=${encodeURIComponent(product.name)}`
+              }}
             />
           </div>
 

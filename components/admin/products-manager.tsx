@@ -118,22 +118,30 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
       const filePath = `products/${fileName}`
 
+      console.log("[v0] Uploading image:", fileName)
+
       // Upload to Supabase Storage
       const { data, error } = await supabase.storage.from("product-images").upload(filePath, file)
 
       if (error) {
+        console.log("[v0] Upload error:", error)
         throw error
       }
+
+      console.log("[v0] Upload successful:", data)
 
       // Get public URL
       const {
         data: { publicUrl },
       } = supabase.storage.from("product-images").getPublicUrl(filePath)
 
+      console.log("[v0] Public URL:", publicUrl)
+
       // Update form data with the image URL
       setFormData({ ...formData, image_url: publicUrl })
+      alert("Image uploaded successfully!")
     } catch (error: any) {
-      console.error("Error uploading image:", error)
+      console.error("[v0] Error uploading image:", error)
       alert("Error uploading image: " + (error.message || "Please ensure Supabase storage is configured"))
     } finally {
       setUploadingImage(false)
@@ -157,7 +165,7 @@ export function ProductsManager({ initialProducts, categories }: ProductsManager
             .filter((b) => b)
         : null,
       is_coming_soon: formData.is_coming_soon,
-      is_featured: formData.is_featured,
+      is_featured: formData.is_featured || false,
       display_order: formData.display_order,
     }
 
