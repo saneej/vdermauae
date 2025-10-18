@@ -186,6 +186,41 @@
     overflow-x: hidden;
   }
 
+  /* Mobile text sizing improvements */
+  @media (max-width: 768px) {
+    /* Ensure readable text sizes on mobile */
+    p, span, div {
+      font-size: 16px !important;
+      line-height: 1.5 !important;
+    }
+    
+    h1 {
+      font-size: 2rem !important;
+    }
+    
+    h2 {
+      font-size: 1.75rem !important;
+    }
+    
+    h3 {
+      font-size: 1.5rem !important;
+    }
+    
+    h4 {
+      font-size: 1.25rem !important;
+    }
+    
+    /* Button text sizing */
+    button {
+      font-size: 16px !important;
+    }
+    
+    /* Input text sizing */
+    input, textarea {
+      font-size: 16px !important;
+    }
+  }
+
   @media (min-width: 1024px) {
     .container {
       padding-left: 2rem;
@@ -225,11 +260,12 @@
     html, body {
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
+      overflow-x: hidden !important;
     }
     
     /* Ensure proper scrolling on mobile */
-    main, section {
-      overflow-x: hidden;
+    main, section, div {
+      overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch;
     }
     
@@ -238,6 +274,17 @@
       position: relative;
       -webkit-transform: translate3d(0, 0, 0);
       transform: translate3d(0, 0, 0);
+      overflow-x: hidden !important;
+    }
+    
+    /* Remove all scrollbars on mobile */
+    * {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    
+    *::-webkit-scrollbar {
+      display: none !important;
     }
   }
 }

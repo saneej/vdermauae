@@ -2,6 +2,7 @@
 
 import { useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import { motion, useScroll, useTransform } from "framer-motion"
@@ -33,6 +34,21 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 text-center space-y-6 px-4 w-full max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.1 }}
+          className="mb-8"
+        >
+          <Image
+            src="/images/logo-color.png"
+            alt="Vederma Medical"
+            width={300}
+            height={60}
+            className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto mx-auto transition-transform duration-300 hover:scale-105"
+          />
+        </motion.div>
+
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -46,7 +62,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.4 }}
-          className="text-sm lg:text-base text-muted-foreground max-w-md mx-auto px-4"
+          className="text-base sm:text-lg md:text-xl lg:text-xl text-muted-foreground max-w-md mx-auto px-4"
         >
           Excellence in medical innovation
         </motion.p>

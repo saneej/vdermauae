@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion"
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isHomePage, setIsHomePage] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +18,10 @@ export function Navbar() {
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    setIsHomePage(window.location.pathname === '/')
   }, [])
 
   useEffect(() => {
@@ -52,11 +57,11 @@ export function Navbar() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
+              className={`${isHomePage && !isScrolled ? 'hidden' : 'block'} absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0`}
             >
               <Link href="/" className="flex items-center gap-3 group">
                 <Image
-                  src="/images/vderma-menu-logo.png"
+                  src="/images/logo-color.png"
                   alt="Vederma Medical"
                   width={200}
                   height={40}
@@ -118,7 +123,7 @@ export function Navbar() {
               >
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
                   <Image
-                    src="/images/vderma-menu-logo.png"
+                    src="/images/logo-color.png"
                     alt="Vederma Medical"
                     width={180}
                     height={36}
