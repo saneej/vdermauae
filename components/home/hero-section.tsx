@@ -26,7 +26,7 @@ export function HeroSection() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage:
-            "url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1%20%282%29-sn7Zy0jM8La6OduZwbg9s2hs7E3Lhr.png')",
+            "url('/images/laboratory-bg.jpg')",
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
