@@ -79,31 +79,24 @@ export function FeaturedProducts() {
   return (
     <section className="py-24">
       <div className="container mx-auto px-4 lg:px-8 max-w-7xl">
-        <ScrollReveal animation="fade-up">
-          <div className="flex justify-between items-end mb-16">
-            <div className="space-y-4">
-              <h2 className="text-4xl lg:text-5xl font-bold text-balance">Featured Product Ranges</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl">
-                Discover our comprehensive selection of medical equipment
-              </p>
-            </div>
-            <Button asChild variant="outline" className="hidden lg:flex bg-transparent">
-              <Link href="/products">
-                View All Products
-                <ArrowRight className="ml-2" size={20} />
-              </Link>
-            </Button>
+        <div className="flex justify-between items-end mb-16">
+          <div className="space-y-4">
+            <h2 className="text-4xl lg:text-5xl font-bold text-balance">Featured Product Ranges</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              Discover our comprehensive selection of medical equipment
+            </p>
           </div>
-        </ScrollReveal>
+          <Button asChild variant="outline" className="hidden lg:flex bg-transparent">
+            <Link href="/products">
+              View All Products
+              <ArrowRight className="ml-2" size={20} />
+            </Link>
+          </Button>
+        </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 overflow-hidden">
           {products.map((product, index) => (
-            <ScrollReveal key={product.id} animation="zoom-in" delay={index * 0.1} duration={0.8}>
-              <motion.div
-                className="group h-full"
-                whileHover={{ y: -8 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              >
+            <div key={product.id} className="group h-full">
                 <div className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-border/50 h-full">
                   <div className="relative h-80 bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center p-8 overflow-hidden">
                     <motion.div
@@ -152,21 +145,18 @@ export function FeaturedProducts() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            </ScrollReveal>
+            </div>
           ))}
         </div>
 
-        <ScrollReveal animation="fade-up" delay={0.4}>
-          <div className="mt-12 text-center lg:hidden">
-            <Button asChild>
-              <Link href="/products">
-                View All Products
-                <ArrowRight className="ml-2" size={20} />
-              </Link>
-            </Button>
-          </div>
-        </ScrollReveal>
+        <div className="mt-12 text-center lg:hidden">
+          <Button asChild>
+            <Link href="/products">
+              View All Products
+              <ArrowRight className="ml-2" size={20} />
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   )
