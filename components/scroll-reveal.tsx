@@ -49,23 +49,31 @@ export function ScrollReveal({
   animation = "fade-up",
   duration = 0.6,
 }: ScrollRevealProps) {
+  // Check if mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  
+  // On mobile, render immediately without animations
+  if (isMobile) {
+    return (
+      <div className={className}>
+        {children}
+      </div>
+    )
+  }
+
+  // Desktop: use animations
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-50px" })
-
-  // Simplify animations on mobile
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
-  const mobileAnimation = animation === "fade-up" ? "fade-in" : animation
-  const finalAnimation = isMobile ? mobileAnimation : animation
 
   return (
     <motion.div
       ref={ref}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
-      variants={animations[finalAnimation]}
+      variants={animations[animation]}
       transition={{
-        duration: isMobile ? 0.3 : duration,
-        delay: isMobile ? 0 : delay,
+        duration,
+        delay,
         ease: [0.25, 0.4, 0.25, 1],
       }}
       className={className}

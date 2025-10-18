@@ -272,6 +272,32 @@
       padding-left: 1rem;
       padding-right: 1rem;
     }
+    
+    /* Ensure content is visible on mobile */
+    section {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    
+    /* Fix any hidden content */
+    * {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    
+    /* Disable all animations on mobile */
+    *, *::before, *::after {
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
+    
+    /* Ensure immediate visibility */
+    section, div, main, article {
+      opacity: 1 !important;
+      transform: none !important;
+    }
   }
 
   @media (min-width: 1024px) {
@@ -290,6 +316,23 @@
   /* Optimize rendering for smooth scroll */
   html.lenis {
     height: auto;
+  }
+
+  /* Liquid glass effect for navbar */
+  .glass-navbar {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced glass effect for mobile menu */
+  .glass-mobile-menu {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .lenis.lenis-smooth {

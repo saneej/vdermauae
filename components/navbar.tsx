@@ -48,7 +48,7 @@ export function Navbar() {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-          isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-transparent"
+          isScrolled ? "glass-navbar" : "bg-transparent"
         } ${isHomePage && !isScrolled ? "hidden" : "block"}`}
       >
         <div className="container mx-auto px-4 lg:px-8">
@@ -113,7 +113,7 @@ export function Navbar() {
               duration: 0.7,
               ease: [0.19, 1, 0.22, 1],
             }}
-            className="fixed inset-0 bg-background z-[55] lg:hidden overflow-hidden"
+            className="fixed inset-0 glass-mobile-menu z-[55] lg:hidden overflow-hidden"
           >
             <div className="container mx-auto px-6 h-full flex flex-col justify-between py-6">
               {/* Logo and Close Button at top */}
