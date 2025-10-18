@@ -49,7 +49,7 @@ export function Navbar() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
           isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-transparent"
-        }`}
+        } ${isHomePage && !isScrolled ? "lg:block hidden" : "block"}`}
       >
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-20">
@@ -57,7 +57,7 @@ export function Navbar() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className={`${isHomePage && !isScrolled ? 'hidden' : 'block'} absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0`}
+              className={`${isHomePage && !isScrolled ? 'lg:block hidden' : 'block'} absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0`}
             >
               <Link href="/" className="flex items-center gap-3 group">
                 <Image
@@ -91,7 +91,9 @@ export function Navbar() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-foreground hover:text-primary transition-colors relative z-[60]"
+              className={`lg:hidden p-2 text-foreground hover:text-primary transition-colors relative z-[60] ${
+                isHomePage && !isScrolled ? 'hidden lg:hidden' : 'block'
+              }`}
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
