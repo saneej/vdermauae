@@ -50,17 +50,22 @@ export function ScrollReveal({
   duration = 0.6,
 }: ScrollRevealProps) {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = useInView(ref, { once: true, margin: "-50px" })
+
+  // Simplify animations on mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  const mobileAnimation = animation === "fade-up" ? "fade-in" : animation
+  const finalAnimation = isMobile ? mobileAnimation : animation
 
   return (
     <motion.div
       ref={ref}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
-      variants={animations[animation]}
+      variants={animations[finalAnimation]}
       transition={{
-        duration,
-        delay,
+        duration: isMobile ? 0.3 : duration,
+        delay: isMobile ? 0 : delay,
         ease: [0.25, 0.4, 0.25, 1],
       }}
       className={className}

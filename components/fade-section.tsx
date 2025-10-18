@@ -18,7 +18,13 @@ export function FadeSection({ children }: FadeSectionProps) {
   const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [50, 0, 0, -50])
 
   return (
-    <motion.div ref={ref} style={{ opacity, y }}>
+    <motion.div 
+      ref={ref} 
+      style={{ 
+        opacity: typeof window !== 'undefined' && window.innerWidth <= 768 ? 1 : opacity,
+        y: typeof window !== 'undefined' && window.innerWidth <= 768 ? 0 : y
+      }}
+    >
       {children}
     </motion.div>
   )

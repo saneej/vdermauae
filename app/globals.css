@@ -229,35 +229,14 @@
   /* Mobile text sizing improvements */
   @media (max-width: 768px) {
     /* Ensure readable text sizes on mobile */
-    p, span, div {
-      font-size: 16px !important;
-      line-height: 1.5 !important;
-    }
-    
-    h1 {
-      font-size: 1.5rem !important;
-    }
-    
-    h2 {
-      font-size: 1.75rem !important;
-    }
-    
-    h3 {
-      font-size: 1.5rem !important;
-    }
-    
-    h4 {
-      font-size: 1.25rem !important;
-    }
-    
-    /* Button text sizing */
-    button {
-      font-size: 16px !important;
+    p {
+      font-size: 16px;
+      line-height: 1.5;
     }
     
     /* Input text sizing */
     input, textarea {
-      font-size: 16px !important;
+      font-size: 16px;
     }
     
     /* Ensure homescreen takes full height on mobile */
@@ -278,14 +257,20 @@
     
     /* Ensure proper spacing for content */
     main {
-      margin-top: 0 !important;
-      padding-top: 0 !important;
+      margin-top: 0;
+      padding-top: 0;
     }
     
-    /* Remove any padding from home page */
-    body > main {
-      margin-top: 0 !important;
-      padding-top: 0 !important;
+    /* Ensure sections are visible on mobile */
+    section {
+      min-height: auto;
+      padding: 2rem 0;
+    }
+    
+    /* Fix mobile container sizing */
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
   }
 
@@ -335,9 +320,7 @@
     /* Ensure proper scrolling on mobile - prevent individual section scrolling */
     main, section, div, article {
       overflow-x: hidden !important;
-      overflow-y: visible !important;
       -webkit-overflow-scrolling: touch;
-      height: auto !important;
     }
     
     /* Fix for iOS Safari */
@@ -352,12 +335,10 @@
     /* Prevent sections from creating scroll contexts */
     section {
       position: relative;
-      overflow: visible !important;
     }
     
     /* Ensure main content area allows page scrolling */
     main {
-      overflow: visible !important;
       height: auto !important;
     }
     
