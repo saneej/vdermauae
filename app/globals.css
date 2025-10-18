@@ -235,7 +235,7 @@
     }
     
     h1 {
-      font-size: 2rem !important;
+      font-size: 1.5rem !important;
     }
     
     h2 {
@@ -258,6 +258,34 @@
     /* Input text sizing */
     input, textarea {
       font-size: 16px !important;
+    }
+    
+    /* Ensure homescreen takes full height on mobile */
+    .h-screen {
+      height: 100vh !important;
+      min-height: 100vh !important;
+    }
+    
+    /* Fix mobile viewport height */
+    html, body {
+      height: 100% !important;
+    }
+    
+    /* Hide navbar on homescreen for mobile */
+    nav.hidden {
+      display: none !important;
+    }
+    
+    /* Ensure proper spacing for content */
+    main {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+    
+    /* Remove any padding from home page */
+    body > main {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
     }
   }
 

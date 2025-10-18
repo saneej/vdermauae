@@ -21,7 +21,7 @@ export function HeroSection() {
     <motion.section
       ref={sectionRef}
       style={{ opacity, scale }}
-      className="relative h-screen flex items-center justify-center overflow-hidden w-full max-w-full"
+      className="relative h-screen min-h-screen flex items-center justify-center overflow-hidden w-full max-w-full"
     >
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -53,7 +53,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-balance px-2"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-balance px-2"
         >
           Innovate to <span className="text-primary">Elevate Care</span>
         </motion.h1>
