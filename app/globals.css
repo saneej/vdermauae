@@ -215,6 +215,7 @@
     padding-right: 1rem;
   }
 
+<<<<<<< HEAD
   /* Fix mobile viewport width issues */
   * {
     box-sizing: border-box;
@@ -300,6 +301,8 @@
     }
   }
 
+=======
+>>>>>>> parent of 37cdf4a (mobile view fit issue)
   @media (min-width: 1024px) {
     .container {
       padding-left: 2rem;

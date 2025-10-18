@@ -21,7 +21,11 @@ export function HeroSection() {
     <motion.section
       ref={sectionRef}
       style={{ opacity, scale }}
+<<<<<<< HEAD
       className="relative h-screen min-h-screen flex items-center justify-center overflow-hidden w-full max-w-full"
+=======
+      className="relative h-screen flex items-center justify-center overflow-hidden"
+>>>>>>> parent of 37cdf4a (mobile view fit issue)
     >
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -33,6 +37,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
       </div>
 
+<<<<<<< HEAD
       <div className="relative z-10 text-center space-y-6 px-4 w-full max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -49,11 +54,18 @@ export function HeroSection() {
           />
         </motion.div>
 
+=======
+      <div className="relative z-10 text-center space-y-6 px-4">
+>>>>>>> parent of 37cdf4a (mobile view fit issue)
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
+<<<<<<< HEAD
           className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-balance px-2"
+=======
+          className="text-6xl lg:text-8xl font-bold text-balance"
+>>>>>>> parent of 37cdf4a (mobile view fit issue)
         >
           Innovate to <span className="text-primary">Elevate Care</span>
         </motion.h1>
@@ -62,7 +74,11 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.4 }}
+<<<<<<< HEAD
           className="text-base sm:text-lg md:text-xl lg:text-xl text-muted-foreground max-w-md mx-auto px-4"
+=======
+          className="text-sm lg:text-base text-muted-foreground max-w-md mx-auto"
+>>>>>>> parent of 37cdf4a (mobile view fit issue)
         >
           Excellence in medical innovation
         </motion.p>
@@ -71,7 +87,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="flex flex-wrap gap-4 justify-center pt-4 px-4"
+          className="flex flex-wrap gap-4 justify-center pt-4"
         >
           <Button
             asChild
