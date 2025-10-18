@@ -146,6 +146,28 @@
     position: relative;
   }
 
+  /* Mobile-specific scrolling optimizations */
+  html.native-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html.native-scroll body {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Disable Lenis on mobile to prevent conflicts */
+  @media (max-width: 768px) {
+    html.lenis {
+      height: auto !important;
+    }
+    
+    html.lenis body {
+      overflow: auto !important;
+    }
+  }
+
   /* Ensure all containers respect viewport width */
   .container {
     max-width: 100%;
@@ -196,6 +218,27 @@
 
   .lenis.lenis-scrolling iframe {
     pointer-events: none;
+  }
+
+  /* Mobile scroll optimizations */
+  @media (max-width: 768px) {
+    html, body {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    
+    /* Ensure proper scrolling on mobile */
+    main, section {
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Fix for iOS Safari */
+    body {
+      position: relative;
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+    }
   }
 }
 

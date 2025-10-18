@@ -206,10 +206,12 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               window.addEventListener('load', function() {
-                // Check for reduced motion preference
+                // Check for reduced motion preference and mobile devices
                 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                 
-                if (typeof Lenis !== 'undefined' && !prefersReducedMotion) {
+                // Only enable Lenis on desktop and if user doesn't prefer reduced motion
+                if (typeof Lenis !== 'undefined' && !prefersReducedMotion && !isMobile) {
                   const lenis = new Lenis({
                     duration: 1.2,
                     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -259,6 +261,9 @@ export default function RootLayout({
                   
                   // Add lenis class to html for CSS targeting
                   document.documentElement.classList.add('lenis', 'lenis-smooth');
+                } else {
+                  // For mobile devices, use native scrolling
+                  document.documentElement.classList.add('native-scroll');
                 }
               });
             `,

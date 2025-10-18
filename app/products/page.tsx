@@ -263,7 +263,10 @@ export default function ProductsPage() {
       {/* Hero Section with Parallax */}
       <motion.section
         ref={heroRef}
-        style={{ opacity: heroOpacity, scale: heroScale }}
+        style={{ 
+          opacity: typeof window !== 'undefined' && window.innerWidth > 768 ? heroOpacity : 1,
+          scale: typeof window !== 'undefined' && window.innerWidth > 768 ? heroScale : 1
+        }}
         className="py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative z-10"
       >
         <div className="container mx-auto px-4 lg:px-8">
@@ -657,7 +660,7 @@ export default function ProductsPage() {
   )
 }
 
-// ParallaxSection component for fade effect
+// ParallaxSection component for fade effect - disabled on mobile
 function ParallaxSection({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -665,11 +668,18 @@ function ParallaxSection({ children }: { children: React.ReactNode }) {
     offset: ["start end", "end start"],
   })
 
+  // Only apply parallax effects on desktop
   const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
   const y = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [40, 0, 0, -40])
 
   return (
-    <motion.div ref={ref} style={{ opacity, y }}>
+    <motion.div 
+      ref={ref} 
+      style={{ 
+        opacity: typeof window !== 'undefined' && window.innerWidth > 768 ? opacity : 1,
+        y: typeof window !== 'undefined' && window.innerWidth > 768 ? y : 0
+      }}
+    >
       {children}
     </motion.div>
   )
